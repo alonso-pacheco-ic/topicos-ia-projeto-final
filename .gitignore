@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Configuración de contenedores
+.devcontainer/
+Dockerfile
+
+# Archivos específicos del sistema
+*.log
+*.tmp
