@@ -8,4 +8,4 @@ WORKDIR /app
 # COPY . /app
 
 # Ejecuta el contenedor con una shell interactiva (opcional)
-CMD ["python"
+CMD ["python"]
