@@ -1,11 +1,65 @@
-# Usa la imagen oficial de Python 3.10.6
-FROM python:3.10.6-slim
+# Imagen base con PyTorch
+FROM nvcr.io/nvidia/pytorch:23.06-py3
 
-# Establece el directorio de trabajo
-WORKDIR /app
+# Definir variables de entorno
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Copia tu aplicación o script aquí (opcional)
-# COPY . /app
+# Instalar herramientas esenciales
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        bzip2 \
+        ca-certificates \
+        cmake \
+        curl \
+        git \
+        htop \
+        libssl-dev \
+        net-tools \
+        pandoc \
+        python3-sphinx \
+        tmux \
+        tree \
+        unzip \
+        vim \
+        wget \
+        sudo && \
+    rm -rf /var/lib/apt/lists/* && apt-get clean
 
-# Ejecuta el contenedor con una shell interactiva (opcional)
-CMD ["python"]
+# Instalar Node.js (opcional si se necesita)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
+    apt-get install -y nodejs
+
+# Crear el usuario y agregar soporte para sudo
+RUN groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Instalar paquetes de Python
+RUN python -m pip install --upgrade pip setuptools pytest && \
+    python -m pip install --no-cache-dir \
+        black \
+        ipykernel \
+        matplotlib>=3.7 \
+        seaborn>=0.11 \
+        pandas>=2.0 \
+        numpy>=1.22 \
+        scikit-image>=0.19 \
+        tqdm \
+        ipywidgets
+
+# Cambiar el shell para el usuario
+RUN chsh --shell /bin/bash $USERNAME
+
+# Exponer puertos necesarios
+EXPOSE 8888
+
+# Establecer el usuario por defecto
+USER $USERNAME
+
+# Comando por defecto
+CMD ["/bin/bash"]

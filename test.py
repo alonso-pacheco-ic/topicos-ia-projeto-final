@@ -1,0 +1,1 @@
+print("El contenedor se está ejecutando correctamente.")

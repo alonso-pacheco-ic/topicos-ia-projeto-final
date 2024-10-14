@@ -1,13 +1,23 @@
 {
-    "name": "Python 3.10.6 Container",
-    "build": {
-      "dockerfile": "Dockerfile"
-    },
-    "settings": {},
-    "extensions": [
-      "ms-python.python"
-    ],
-    "postCreateCommand": "pip install -r requirements.txt",
-    "remoteUser": "vscode"
-  }
-  
+  "name": "My PyTorch Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.pythonPath": "/usr/local/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black",
+    "jupyter.jupyterServerType": "local"
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-toolsai.jupyter",
+    "esbenp.prettier-vscode"
+  ],
+  "forwardPorts": [8888],
+  "remoteUser": "vscode"
+}
