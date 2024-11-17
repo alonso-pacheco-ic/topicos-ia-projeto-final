@@ -31,7 +31,8 @@ RUN apt-get update && \
 
 # Instalar Node.js (opcional si se necesita)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Crear el usuario y agregar soporte para sudo
 RUN groupadd --gid $USER_GID $USERNAME && \
@@ -39,18 +40,25 @@ RUN groupadd --gid $USER_GID $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Instalar paquetes de Python
+# Instalar paquetes de Python, incluyendo PyTorch Lightning
 RUN python -m pip install --upgrade pip setuptools pytest && \
     python -m pip install --no-cache-dir \
         black \
         ipykernel \
+        kaleido>=0.2 \
+        lightning>=2.1.9 \
         matplotlib>=3.7 \
-        seaborn>=0.11 \
-        pandas>=2.0 \
+        nbformat \
         numpy>=1.22 \
-        scikit-image>=0.19 \
-        tqdm \
-        ipywidgets
+        pandas>=2.0 \
+        plotly>=5.18 \
+        seaborn>=0.11 \
+        scipy>=1.10 \
+        torchmetrics>=1.3.0 \
+        torchvision>=0.15 \
+        wrapt \
+        tifffile \
+        perlin-noise
 
 # Cambiar el shell para el usuario
 RUN chsh --shell /bin/bash $USERNAME
