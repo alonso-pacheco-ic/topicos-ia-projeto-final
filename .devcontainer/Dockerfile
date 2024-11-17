@@ -1,13 +1,13 @@
-# Imagen base con PyTorch
+# Image base with PyTorch
 FROM nvcr.io/nvidia/pytorch:23.06-py3
 
-# Definir variables de entorno
+# Define environment variables
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar herramientas esenciales
+# Install essential tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -29,18 +29,18 @@ RUN apt-get update && \
         sudo && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
 
-# Instalar Node.js (opcional si se necesita)
+# Install Node.js (optional)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
 
-# Crear el usuario y agregar soporte para sudo
+# Create the user and add sudo support
 RUN groupadd --gid $USER_GID $USERNAME && \
     useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Instalar paquetes de Python, incluyendo PyTorch Lightning
+# Install Python packages, including PyTorch Lightning
 RUN python -m pip install --upgrade pip setuptools pytest && \
     python -m pip install --no-cache-dir \
         black \
@@ -60,14 +60,14 @@ RUN python -m pip install --upgrade pip setuptools pytest && \
         tifffile \
         perlin-noise
 
-# Cambiar el shell para el usuario
+# Change the shell for the user
 RUN chsh --shell /bin/bash $USERNAME
 
-# Exponer puertos necesarios
+# Expose necessary ports
 EXPOSE 8888
 
-# Establecer el usuario por defecto
+# Set default user
 USER $USERNAME
 
-# Comando por defecto
+# Default command
 CMD ["/bin/bash"]
